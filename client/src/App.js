@@ -33,7 +33,7 @@ const App = () => {
         <Route exact path="/courses/:id" component={CourseDetailWithContext} />
         <Route exact path="/signup" component={UserSignUp} />
         <Route exact path="/signin" component={UserSignIn} />
-        {/* <Route exact path="/courses/create" component={CreateCourse} /> */}
+        <Route exact path="/courses/create" component={CreateCourse} />
       </Switch>
     </Router>
   );
