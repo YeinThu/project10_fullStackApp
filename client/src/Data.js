@@ -29,6 +29,17 @@ class Data extends Component {
       return null;
     }
   }
+
+  async getCourse(id) {
+    const response = await this.api(`/courses/${id}`, 'GET', null);
+
+    if (response.status === 200) {
+      return response.json(data => data);
+    }
+    else {
+      return null;
+    }
+  }
 };
 
 export default Data;
