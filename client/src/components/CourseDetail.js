@@ -29,9 +29,10 @@ class CourseDetail extends Component {
       title,
       description,
       estimatedTime,
-      materialsNeeded
+      materialsNeeded,
+      userId
     } = this.state.course;
-
+  
     let firstName,
         lastName
 
@@ -41,11 +42,16 @@ class CourseDetail extends Component {
       lastName = User.lastName;
     }
     
+    const id = this.props.match.params.id;
+
+    const { context } = this.props;
+    const authUser = context.authenticatedUser.authenticatedUser;
+    
     return (
       <main>
         <div className="actions--bar">
           <div className="wrap">
-            <Link className="button" to="update-course.html">Update Course</Link>
+            <Link className="button" to={`/courses/${id}/update`}>Update Course</Link>
             <Link className="button" to="#">Delete Course</Link>
             <Link className="button button-secondary" to="index.html">Return to List</Link>
           </div>
@@ -57,7 +63,7 @@ class CourseDetail extends Component {
               <div>
                 <h3 className="course--detail--title">Course</h3>
                 <h4 className="course--name">{title}</h4>
-                <p>By</p>
+                <p>By {`${firstName} ${lastName}`}</p>
 
                 <p>{description}</p>
               </div>

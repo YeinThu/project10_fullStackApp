@@ -1,17 +1,36 @@
 import { Component, Fragment } from 'react';
 import Form from './Form';
 
-class CreateCourse extends Component {
+class UpdateCourse extends Component {
   constructor() {
     super();
     this.state = {
-      title: '',
-      description: '',
-      estimatedTime: '',
-      materialsNeeded: '',
-      userId: null,
-      errors: []
+        id: null,
+        title: '',
+        description: '',
+        estimatedTime: '',
+        materialsNeeded: '',
+        userId: null,
+        errors: []
     }
+  }
+
+  // When component first mounts, retrieve the current course to update from the database
+  componentDidMount() {
+    const { data } = this.props.context;
+    const id = this.props.match.params.id;
+
+    data.getCourse(id)
+      .then(courseData => {
+        this.setState({
+          id: courseData.id,
+          title: courseData.title,
+          description: courseData.description,
+          estimatedTime: courseData.estimatedTime,
+          materialsNeeded: courseData.materialsNeeded,
+          userId: courseData.userId
+        });
+      });
   }
 
   change = (event) => {
@@ -25,38 +44,25 @@ class CreateCourse extends Component {
     });
   }
 
-  cancel = () => {
-    this.props.history.push('/');
-  }
-
   render() {
-    const { 
+    const {
+      id,
       title,
       description,
       estimatedTime,
       materialsNeeded,
-      userId,
-      errors
+      userId
     } = this.state;
     
     return (
       <main>
         <div className="wrap">
-          <h2>Create Course</h2>
-          <div className="validation--errors">
-              <h3>Validation Errors</h3>
-              <ul>
-                  <li>Please provide a value for "Title"</li>
-                  <li>Please provide a value for "Description"</li>
-              </ul>
-          </div>
-          <Form
-            cancel={this.cancel}
-            submitButtonText="Create Course" 
+          <h2>Update Course</h2>
+          <Form 
             elements={() => (
               <Fragment>
                 <div className="main--flex">
-                  <div>
+                <div>
                     <label htmlFor="title">Course Title</label>
                     <input
                       id="title" 
@@ -104,4 +110,4 @@ class CreateCourse extends Component {
   }
 };
 
-export default CreateCourse;
+export default UpdateCourse;

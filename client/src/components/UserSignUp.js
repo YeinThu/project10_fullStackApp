@@ -6,15 +6,28 @@ class UserSignUp extends Component {
   constructor() {
     super();
     this.state = {
-      user: {
-        firstName: '',
-        lastName: '',
-        emailAddress: '',
-        password: '',
-        confirmPassword: '',
-        errors: []
-      }
+      firstName: '',
+      lastName: '',
+      emailAddress: '',
+      password: '',
+      confirmPassword: '',
+      errors: []
     };
+  }
+
+  change = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+
+    this.setState(() => {
+      return {
+        [name]: value
+      }
+    })
+  }
+
+  cancel = () => {
+    this.props.history.push('/');
   }
 
   render() {
@@ -25,7 +38,7 @@ class UserSignUp extends Component {
       password,
       confirmPassword,
       errors
-    } = this.state.user;
+    } = this.state;
 
     return (
       <main>
@@ -41,7 +54,7 @@ class UserSignUp extends Component {
                   id="firstName" 
                   name="firstName" 
                   type="text" 
-                  value={firstName || ""} 
+                  value={firstName} 
                   onChange={this.change} 
                 />
 
@@ -50,7 +63,7 @@ class UserSignUp extends Component {
                   id="lastName" 
                   name="lastName" 
                   type="text" 
-                  value={lastName || ""} 
+                  value={lastName} 
                   onChange={this.change} 
                 />
 
@@ -59,7 +72,7 @@ class UserSignUp extends Component {
                   id="emailAddress" 
                   name="emailAddress" 
                   type="email" 
-                  value={emailAddress || ""} 
+                  value={emailAddress} 
                   onChange={this.change} 
                 />
 
@@ -68,7 +81,7 @@ class UserSignUp extends Component {
                   id="password" 
                   name="password" 
                   type="password" 
-                  value={password || ""} 
+                  value={password} 
                   onChange={this.change} 
                 />
 
@@ -77,7 +90,7 @@ class UserSignUp extends Component {
                   id="confirmPassword" 
                   name="confirmPassword" 
                   type="password" 
-                  value={confirmPassword || ""} 
+                  value={confirmPassword} 
                   onChange={this.change} 
                 />
               </Fragment>
@@ -87,23 +100,6 @@ class UserSignUp extends Component {
         </div>
       </main>
     )
-  }
-
-  change = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-
-    this.setState(() => {
-      return {
-        user: {
-          [name]: value
-        }
-      }
-    })
-  }
-
-  cancel = () => {
-    this.props.history.push('/');
   }
 };
 

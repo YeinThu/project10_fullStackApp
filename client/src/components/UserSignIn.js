@@ -1,4 +1,4 @@
-import { Component, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import Form from './Form';
 
@@ -6,12 +6,44 @@ class UserSignIn extends Component {
   constructor() {
     super();
     this.state = {
-      user: {
-        emailAddress: '',
-        password: '',
-        errors: []
-      }
+      emailAddress: '',
+      password: '',
+      errors: []
     }
+    
+  }
+
+  change = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+
+    this.setState(() => {
+      return {
+        [name]: value
+      }
+    })
+  }
+
+  submit = () => {
+    const { context } = this.props;
+    const { emailAddress, password } = this.state;
+    const { from } = this.props.location.state || { from: { pathname: '/' } };
+    
+    context.actions.signIn(emailAddress, password)
+      .then(user => {
+        if (user === null) {
+          console.log('Unsuccessful');
+        }
+        else {
+          this.props.history.push(from.pathname);
+          console.log('Success! You are now signed in!');
+          console.log(user)
+        }
+      });
+  }
+
+  cancel = () => {
+    this.props.history.push('/');
   }
 
   render() {
@@ -19,13 +51,14 @@ class UserSignIn extends Component {
       emailAddress,
       password,
       errors
-    } = this.state.user;
-    
+    } = this.state;
+   
     return (
       <main>
         <div className="form--centered">
           <h2>Sign In</h2>
           <Form 
+            submit={this.submit}
             cancel={this.cancel}
             submitButtonText="Sign In"
             elements={() => (
@@ -35,7 +68,7 @@ class UserSignIn extends Component {
                   id="emailAddress"
                   name="emailAddress"
                   type="email"
-                  value={emailAddress || ""}
+                  value={emailAddress}
                   onChange={this.change}
                 />
 
@@ -44,7 +77,7 @@ class UserSignIn extends Component {
                   id="password"
                   name="password"
                   type="password"
-                  value={password || ""}
+                  value={password}
                   onChange={this.change}
                 />
               </Fragment>
@@ -54,23 +87,6 @@ class UserSignIn extends Component {
         </div>
       </main>
     );
-  }
-
-  change = (event) => {
-    const name = event.target.name;
-    const value = event.target.value;
-
-    this.setState(() => {
-      return {
-        user: {
-          [name]: value
-        }
-      }
-    })
-  }
-
-  cancel = () => {
-    this.props.history.push('/');
   }
 }
 
