@@ -37,7 +37,6 @@ class UserSignIn extends Component {
         else {
           this.props.history.push(from.pathname);
           console.log('Success! You are now signed in!');
-          console.log(user)
         }
       });
   }
@@ -58,6 +57,7 @@ class UserSignIn extends Component {
         <div className="form--centered">
           <h2>Sign In</h2>
           <Form 
+            errors={errors}
             submit={this.submit}
             cancel={this.cancel}
             submitButtonText="Sign In"

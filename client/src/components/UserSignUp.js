@@ -26,6 +26,49 @@ class UserSignUp extends Component {
     })
   }
 
+  submit = () => {
+    const { context } = this.props;
+
+    const {
+      firstName,
+      lastName,
+      emailAddress,
+      password,
+      confirmPassword,
+    } = this.state;
+
+    const user = {
+      firstName,
+      lastName,
+      emailAddress,
+      password
+    };
+
+    if (password === confirmPassword) {
+      context.data.createUser(user)
+        .then(dataErrors => {
+          if (dataErrors.length) {
+            this.setState({
+              errors: dataErrors
+            });
+          }
+          else {
+            context.actions.signIn(emailAddress, password);
+            this.props.history.push('/');
+          }
+        })
+        .catch(err => {
+          console.log(`An error has occurred: ${err}`);
+          this.props.history.push('/error');
+        })
+    }
+    else {
+      this.setState({
+        errors: ['"Password" and "Confirm Password" values must match.']
+      });
+    }
+  }
+
   cancel = () => {
     this.props.history.push('/');
   }
@@ -45,6 +88,8 @@ class UserSignUp extends Component {
         <div className="form--centered">
           <h2>Sign Up</h2>
           <Form
+            errors={errors}
+            submit={this.submit}
             cancel={this.cancel}
             submitButtonText="Sign Up"
             elements={() => (

@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown'
 
@@ -12,15 +12,56 @@ class CourseDetail extends Component {
 
   // When component first mounts, retireve individual course details
   componentDidMount() {
-    const { data } = this.props.context;
+    const { context } = this.props;
     const id = this.props.match.params.id;
 
-    data.getCourse(id)
+    context.data.getCourse(id)
       .then(courseData => {
-        this.setState({
-          course: courseData
-        })
+        if (courseData) {
+          this.setState({
+            course: courseData
+          });
+        }
+        else {
+          this.props.history.push('/notfound');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        this.props.history.push('/error');
+      })
+  }
+
+  // Delete course
+  delete = () => {
+    const { context } = this.props;
+
+    const id = this.props.match.params.id;
+    const emailAddress = context.authenticatedUser.authenticatedUser.emailAddress;
+    const password = context.authenticatedUser.originalPassword;
+
+    // A modal popup asks the client if they are sure they want to delete their course
+    let confirmDelete = window.confirm('WARNING. This will permanently delete the course. Do you want to continue?');
+
+    if (confirmDelete) {
+      context.data.deleteCourse(id, emailAddress, password)
+      .then(dataErrors => {
+        if (dataErrors.length) {
+          console.log(`Errors: ${dataErrors}`);
+        }
+        else {
+          this.props.history.push('/');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        this.props.history.push('/error')
       });
+    }
+    else {
+      console.log('Delete request has been cancelled.')
+    }
+    
   }
 
   render() {
@@ -51,9 +92,37 @@ class CourseDetail extends Component {
       <main>
         <div className="actions--bar">
           <div className="wrap">
-            <Link className="button" to={`/courses/${id}/update`}>Update Course</Link>
-            <Link className="button" to="#">Delete Course</Link>
-            <Link className="button button-secondary" to="index.html">Return to List</Link>
+            {
+              (() => {
+                if (authUser) {
+                  const authUserId = authUser.id;
+
+                  if (authUserId === userId) {
+                    return (
+                      <Fragment>
+                        <Link className="button" to={`/courses/${id}/update`}>Update Course</Link>
+                        <Link className="button" to="#" onClick={this.delete}>Delete Course</Link>
+                        <Link className="button button-secondary" to="/">Return to List</Link>
+                      </Fragment>
+                    )
+                  }
+                  else {
+                    return (
+                      <Fragment>
+                        <Link className="button button-secondary" to="/">Return to List</Link>
+                      </Fragment>
+                    )
+                  }
+                }
+                else {
+                  return (
+                    <Fragment>
+                      <Link className="button button-secondary" to="/">Return to List</Link>
+                    </Fragment>
+                  )
+                }
+              })()
+            }
           </div>
         </div>
         <div className="wrap">
@@ -65,7 +134,7 @@ class CourseDetail extends Component {
                 <h4 className="course--name">{title}</h4>
                 <p>By {`${firstName} ${lastName}`}</p>
 
-                <p>{description}</p>
+                <ReactMarkdown>{description}</ReactMarkdown>
               </div>
               <div>
                 <h3 className="course--detail--title">Estimated Time</h3>

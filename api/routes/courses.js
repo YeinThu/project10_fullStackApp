@@ -118,7 +118,7 @@ router.post('/', authenticateUser, asyncHandler(async (req, res, next) => {
 /* PUT update corresponding course */
 router.put('/:id', authenticateUser, asyncHandler(async (req, res, next) => {
   const course = await Course.findByPk(req.params.id, {
-    // Return specified attributes, excepte for 'createdAt' and 'updatedAt'
+    // Return specified attributes, except for 'createdAt' and 'updatedAt'
     attributes: ["id", "title", "description", "estimatedTime", "materialsNeeded", "userId"],
     include: [
       {

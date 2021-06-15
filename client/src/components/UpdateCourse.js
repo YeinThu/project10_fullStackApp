@@ -5,32 +5,47 @@ class UpdateCourse extends Component {
   constructor() {
     super();
     this.state = {
-        id: null,
-        title: '',
-        description: '',
-        estimatedTime: '',
-        materialsNeeded: '',
-        userId: null,
-        errors: []
+      id: null,
+      title: '',
+      description: '',
+      estimatedTime: '',
+      materialsNeeded: '',
+      userId: null,
+      errors: []
     }
   }
 
   // When component first mounts, retrieve the current course to update from the database
   componentDidMount() {
-    const { data } = this.props.context;
+    const { context } = this.props;
     const id = this.props.match.params.id;
-
-    data.getCourse(id)
+    const authUserId = context.authenticatedUser.authenticatedUser.id;
+    
+    context.data.getCourse(id)
       .then(courseData => {
-        this.setState({
-          id: courseData.id,
-          title: courseData.title,
-          description: courseData.description,
-          estimatedTime: courseData.estimatedTime,
-          materialsNeeded: courseData.materialsNeeded,
-          userId: courseData.userId
-        });
-      });
+        if (courseData) {
+          if (courseData.userId === authUserId) {
+            this.setState({
+              id: courseData.id,
+              title: courseData.title,
+              description: courseData.description,
+              estimatedTime: courseData.estimatedTime,
+              materialsNeeded: courseData.materialsNeeded,
+              userId: courseData.userId
+            });
+          }
+          else {
+            this.props.history.push('/forbidden');
+          }
+        }
+        else {
+          this.props.history.push('/notfound');
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        this.props.history.push('/error');
+      })
   }
 
   change = (event) => {
@@ -44,21 +59,69 @@ class UpdateCourse extends Component {
     });
   }
 
-  render() {
+  submit = () => {
+    const { context } = this.props;
+    const emailAddress = context.authenticatedUser.authenticatedUser.emailAddress;
+    const password = context.authenticatedUser.originalPassword;
+
     const {
       id,
       title,
       description,
       estimatedTime,
       materialsNeeded,
+      userId,
+    } = this.state;
+
+    const updatedCourse = {
+      id,
+      title,
+      description,
+      estimatedTime,
+      materialsNeeded,
       userId
+    };
+
+    context.data.updateCourse(updatedCourse, emailAddress, password)
+      .then(dataErrors => {
+        if (dataErrors.length) {
+          this.setState({
+            errors: dataErrors
+          });
+        }
+        else {
+          this.props.history.push(`/courses/${updatedCourse.id}`);
+        }
+      })
+      .catch(err => {
+        console.log(`An error has occurred: ${err}`);
+        this.props.history.push('/error');
+      });
+      
+  }
+
+  cancel = () => {
+    this.props.history.push(`/courses/${this.state.id}`);
+  }
+
+  render() {
+    const {
+      title,
+      description,
+      estimatedTime,
+      materialsNeeded,
+      errors
     } = this.state;
     
     return (
       <main>
         <div className="wrap">
           <h2>Update Course</h2>
-          <Form 
+          <Form
+            errors={errors}
+            submit={this.submit}
+            cancel={this.cancel} 
+            submitButtonText="Update Course"
             elements={() => (
               <Fragment>
                 <div className="main--flex">
@@ -68,8 +131,8 @@ class UpdateCourse extends Component {
                       id="title" 
                       name="title"
                       type="text"
+                      value={title || ""}
                       onChange={this.change}
-                      value={title}
                     />
 
                     <p>By Joe Smith</p>
@@ -78,8 +141,8 @@ class UpdateCourse extends Component {
                     <textarea
                       id="description"
                       name="description"
+                      value={description || ""}
                       onChange={this.change}
-                      value={description}
                     ></textarea>
                   </div>
                   <div>
@@ -88,16 +151,16 @@ class UpdateCourse extends Component {
                       id="estimatedTime"
                       name="estimatedTime"
                       type="text"
+                      value={estimatedTime || ""}
                       onChange={this.change}
-                      value={estimatedTime}
                     />
 
                     <label htmlFor="materialsNeeded">Materials Needed</label>
                     <textarea
                       id="materialsNeeded"
                       name="materialsNeeded"
+                      value={materialsNeeded || ""}
                       onChange={this.change}
-                      value={materialsNeeded}
                     ></textarea>
                   </div>
                 </div>

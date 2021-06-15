@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Cookies from 'js-cookie';
 import Data from './Data';
 
 const Context = React.createContext();
@@ -8,11 +9,17 @@ export class Provider extends Component {
     super();
     this.data = new Data();
     this.state = {
-      authenticatedUser: null
+      authenticatedUser: Cookies.getJSON('authenticatedUser') || null, // User cookie set to context
+      originalPassword: null
     }
   }
 
+  // Sign in user
   signIn = async (emailAddress, password) => {
+    this.setState({
+      originalPassword: password
+    });
+    
     const user = await this.data.getUser(emailAddress, password);
     
     if (user !== null) {
@@ -20,16 +27,23 @@ export class Provider extends Component {
         return {
           authenticatedUser: user
         }
-      })
+      });
+
+      // When user signs in, it's properties are stored in a cookie for memory (expires in 24 hours)
+      Cookies.set('authenticatedUser', JSON.stringify(user), { expires: 1 });
     }
     
     return user;
   }
 
+  // Sign out user
   signOut = () => {
     this.setState({
       authenticatedUser: null
     });
+
+    // When user signs out, the user cookie is removed
+    Cookies.remove('authenticatedUser');
   }
 
   render() {

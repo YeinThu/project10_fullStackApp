@@ -19,12 +19,14 @@ function asyncHandler(cb) {
 
 /* GET return authenticated user */
 router.get('/', authenticateUser, asyncHandler((req, res) => {
-  const { firstName, lastName, emailAddress } = req.currentUser;
+  const { id, firstName, lastName, emailAddress, password } = req.currentUser;
 
   res.json({
+    id,
     firstName,
     lastName,
-    emailAddress
+    emailAddress,
+    password
   });
 }));
 
