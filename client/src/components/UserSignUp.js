@@ -15,6 +15,7 @@ class UserSignUp extends Component {
     };
   }
 
+  // On change handler. Updates user input values into state upon each key press/change.
   change = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -26,6 +27,7 @@ class UserSignUp extends Component {
     })
   }
 
+  // Submit handler. Adds state values to the API as a new User.
   submit = () => {
     const { context } = this.props;
 
@@ -44,7 +46,10 @@ class UserSignUp extends Component {
       password
     };
 
+    // Checks to see if the "password" and "confirmPassword" input field values match.
+    // If they match, continue on and create the new User.
     if (password === confirmPassword) {
+      // Call createUser to create the new user.
       context.data.createUser(user)
         .then(dataErrors => {
           if (dataErrors.length) {
@@ -62,6 +67,7 @@ class UserSignUp extends Component {
           this.props.history.push('/error');
         })
     }
+    // If the fields do not match, display error message on the screen.
     else {
       this.setState({
         errors: ['"Password" and "Confirm Password" values must match.']
@@ -69,6 +75,7 @@ class UserSignUp extends Component {
     }
   }
 
+  // Cancel handler. Cancels sign-up form screen and returns to the home screen.
   cancel = () => {
     this.props.history.push('/');
   }

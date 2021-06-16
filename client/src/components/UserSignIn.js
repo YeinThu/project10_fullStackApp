@@ -13,6 +13,7 @@ class UserSignIn extends Component {
     
   }
 
+  // On change handler. Updates user input values into state upon each key press/change.
   change = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -24,11 +25,13 @@ class UserSignIn extends Component {
     })
   }
 
+  // Submit handler. Retrieves an authorized user (already registered) from the API
   submit = () => {
     const { context } = this.props;
     const { emailAddress, password } = this.state;
     const { from } = this.props.location.state || { from: { pathname: '/' } };
     
+    // Call signIn method
     context.actions.signIn(emailAddress, password)
       .then(user => {
         if (user === null) {
@@ -38,9 +41,14 @@ class UserSignIn extends Component {
           this.props.history.push(from.pathname);
           console.log('Success! You are now signed in!');
         }
+      })
+      .catch(err => {
+        console.log(`An error has occurred: ${err}`);
+        this.props.history.push('/error');
       });
   }
 
+  // Cancel handler. Cancels sign-in form screen and returns to the home screen.
   cancel = () => {
     this.props.history.push('/');
   }

@@ -14,6 +14,7 @@ class CreateCourse extends Component {
     }
   }
 
+  // On change handler. Updates user input values into state upon each key press/change.
   change = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -25,6 +26,7 @@ class CreateCourse extends Component {
     });
   }
 
+  // Submit handler. Adds state values to the API as a new Course.
   submit = () => {
     const { context } = this.props;
     const emailAddress = context.authenticatedUser.authenticatedUser.emailAddress;
@@ -45,6 +47,7 @@ class CreateCourse extends Component {
       userId: context.authenticatedUser.authenticatedUser.id
     };
 
+    // Call createCourse to create the new course
     context.data.createCourse(newCourse, emailAddress, password)
       .then(dataErrors => {
         if (dataErrors.length) {
@@ -62,6 +65,7 @@ class CreateCourse extends Component {
       });
   }
 
+  // Cancel handler. Cancels the create form screen and returns to the home screen.
   cancel = () => {
     this.props.history.push('/');
   }

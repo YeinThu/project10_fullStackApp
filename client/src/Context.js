@@ -47,6 +47,7 @@ export class Provider extends Component {
   }
 
   render() {
+    // Values / properties to be accessed through context.
     const value = {
       authenticatedUser: this.state,
       data: this.data,
@@ -67,6 +68,7 @@ export class Provider extends Component {
 
 export const Consumer = Context.Consumer;
 
+// Wraps the passed in Component as a consumer so it can gain access to context.
 export default function withContext(Component) {
   return function ContextComponent(props) {
     return (

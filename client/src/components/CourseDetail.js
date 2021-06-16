@@ -43,6 +43,7 @@ class CourseDetail extends Component {
     // A modal popup asks the client if they are sure they want to delete their course
     let confirmDelete = window.confirm('WARNING. This will permanently delete the course. Do you want to continue?');
 
+    // If the user decides to delete the course, call deleteCourse.
     if (confirmDelete) {
       context.data.deleteCourse(id, emailAddress, password)
       .then(dataErrors => {
@@ -58,6 +59,7 @@ class CourseDetail extends Component {
         this.props.history.push('/error')
       });
     }
+    // If the user decides to keep the course, it will stay on the same course detail screen.
     else {
       console.log('Delete request has been cancelled.')
     }
@@ -97,8 +99,10 @@ class CourseDetail extends Component {
                 if (authUser) {
                   const authUserId = authUser.id;
 
+                  // Check and see if the authorized user id matches the user id of the existing course.
                   if (authUserId === userId) {
                     return (
+                      // If they match, display the following components...
                       <Fragment>
                         <Link className="button" to={`/courses/${id}/update`}>Update Course</Link>
                         <Link className="button" to="#" onClick={this.delete}>Delete Course</Link>
@@ -108,6 +112,7 @@ class CourseDetail extends Component {
                   }
                   else {
                     return (
+                      // If they do not match, display the following component.
                       <Fragment>
                         <Link className="button button-secondary" to="/">Return to List</Link>
                       </Fragment>
@@ -116,6 +121,7 @@ class CourseDetail extends Component {
                 }
                 else {
                   return (
+                    // Default component to display.
                     <Fragment>
                       <Link className="button button-secondary" to="/">Return to List</Link>
                     </Fragment>

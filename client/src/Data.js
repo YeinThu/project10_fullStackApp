@@ -6,6 +6,7 @@ class Data extends Component {
   api(path, method = 'GET', body = null, requiresAuth = false, credentials = null) {
     const url = config.apiBaseUrl + path;
 
+    // Options for fetch()
     const options = {
       method,
       headers: {
@@ -13,10 +14,12 @@ class Data extends Component {
       }
     };
 
+    // If a body does exist (values form a form field), stringify it.
     if (body !== null) {
       options.body = JSON.stringify(body);
     };
 
+    // If authorization is required, the credentials are encoded (i.e. email and password)
     if (requiresAuth) {
       const encodedCredentials = btoa(`${credentials.emailAddress}:${credentials.password}`);
       options.headers['Authorization'] = `Basic ${encodedCredentials}`;

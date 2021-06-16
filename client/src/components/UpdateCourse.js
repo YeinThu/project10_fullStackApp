@@ -21,6 +21,7 @@ class UpdateCourse extends Component {
     const id = this.props.match.params.id;
     const authUserId = context.authenticatedUser.authenticatedUser.id;
     
+    // Call getCourse method, to retrieve the course details.
     context.data.getCourse(id)
       .then(courseData => {
         if (courseData) {
@@ -48,6 +49,7 @@ class UpdateCourse extends Component {
       })
   }
 
+  // On change handler. Updates user input values into state upon each key press/change.
   change = (event) => {
     const name = event.target.name;
     const value = event.target.value;
@@ -59,6 +61,7 @@ class UpdateCourse extends Component {
     });
   }
 
+  // Submit handler. 
   submit = () => {
     const { context } = this.props;
     const emailAddress = context.authenticatedUser.authenticatedUser.emailAddress;
@@ -82,6 +85,7 @@ class UpdateCourse extends Component {
       userId
     };
 
+    // Call updateCourse to update the already existing course with it's new details.
     context.data.updateCourse(updatedCourse, emailAddress, password)
       .then(dataErrors => {
         if (dataErrors.length) {
@@ -100,6 +104,7 @@ class UpdateCourse extends Component {
       
   }
 
+  // Cancel handler. Cancels update form screen and returns to the course detail screen. 
   cancel = () => {
     this.props.history.push(`/courses/${this.state.id}`);
   }
