@@ -18,6 +18,10 @@ class Courses extends Component {
           courses: coursesData
         });
       })
+      .catch(err => {
+        console.log(`An error has occurred: ${err}`);
+        this.props.history.push('/error');
+      })
   }
 
   render() {

@@ -39,7 +39,7 @@ class Data extends Component {
       return response.json().then(data => data);
     }
     else {
-      return null;
+      throw new Error();
     }
   }
 
@@ -68,7 +68,7 @@ class Data extends Component {
       return response.json(data => data);
     }
     else {
-      return null;
+      throw new Error();
     }
   }
 
@@ -80,7 +80,7 @@ class Data extends Component {
       return response.json(data => data);
     }
     else {
-      return null;
+      throw new Error();
     }
   }
 
